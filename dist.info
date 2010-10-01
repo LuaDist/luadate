@@ -1,0 +1,14 @@
+--- This file is part of LuaDist project
+
+name = "luadate"
+version = "2"
+
+desc = "LuaDate is a Lua module for date and time calculation and retrieval using the Gregorian Calendar system."
+url = "http://luaforge.net/projects/date/"
+author = "Jas Latrix"
+license = "Public Domain"
+maintainer = "Peter Kapec"
+
+depends = {
+	"lua ~> 5.1"
+}
