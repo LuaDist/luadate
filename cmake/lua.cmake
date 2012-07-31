@@ -54,11 +54,13 @@ macro ( install_lua_executable _name _source )
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}
     )
     # Install with run permissions
-    install ( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${_name} DESTINATION ${INSTALL_BIN} )
+    install ( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${_name} DESTINATION ${INSTALL_BIN} COMPONENT Runtime)
   else()
     # Add .lua suffix and install as is
     install ( PROGRAMS ${_source} DESTINATION ${INSTALL_BIN}
-            RENAME ${_source_name}.lua )
+            RENAME ${_source_name}.lua 
+            COMPONENT Runtime
+    )
   endif()
 endmacro ()
 
@@ -102,7 +104,9 @@ macro ( _lua_module_helper is_install _name )
 
     if ( ${is_install} )
       install ( FILES ${_first_source} DESTINATION ${INSTALL_LMOD}/${_module_dir}
-                RENAME ${_module_filename} )
+                RENAME ${_module_filename} 
+                COMPONENT Runtime
+      )
     endif ()
   else ()  # Lua C binary module
     enable_language ( C )
@@ -123,7 +127,7 @@ macro ( _lua_module_helper is_install _name )
     set_target_properties ( ${_target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
                 "${_module_dir}" PREFIX "" OUTPUT_NAME "${_module_filenamebase}" )
     if ( ${is_install} )
-      install ( TARGETS ${_target} DESTINATION ${INSTALL_CMOD}/${_module_dir})
+      install ( TARGETS ${_target} DESTINATION ${INSTALL_CMOD}/${_module_dir} COMPONENT Runtime)
     endif ()
   endif ()
 endmacro ()
