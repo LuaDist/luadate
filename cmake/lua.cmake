@@ -31,34 +31,41 @@ endmacro ()
 # install_lua_executable ( target source )
 # Automatically generate a binary if srlua package is available
 # The application or its source will be placed into /bin 
-# If the application source did not have .lua suffix then it will be added
+# If the application source did have .lua suffix then it will be removed
 # USE: lua_executable ( sputnik src/sputnik.lua )
 macro ( install_lua_executable _name _source )
-  get_filename_component ( _source_name ${_source} NAME_WE )
   # Find srlua and glue
   find_program( SRLUA_EXECUTABLE NAMES srlua )
   find_program( GLUE_EXECUTABLE NAMES glue )
-  
+  # Executable output
+  set ( _exe ${CMAKE_CURRENT_BINARY_DIR}/${_name}${CMAKE_EXECUTABLE_SUFFIX} )
   if ( NOT SKIP_LUA_WRAPPER AND SRLUA_EXECUTABLE AND GLUE_EXECUTABLE )
-    # Generate binary gluing the lua code to srlua
+    # Generate binary gluing the lua code to srlua, this is a robuust approach for most systems
+    # Recommended, expecially for Windows systems
     add_custom_command(
-      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}
+      OUTPUT ${_exe}
       COMMAND ${GLUE_EXECUTABLE} 
-      ARGS ${SRLUA_EXECUTABLE} ${_source} ${CMAKE_CURRENT_BINARY_DIR}/${_name}
+      ARGS ${SRLUA_EXECUTABLE} ${_source} ${_exe}
       DEPENDS ${_source}
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       VERBATIM
     )
     # Make sure we have a target associated with the binary
     add_custom_target(${_name} ALL
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}
+        DEPENDS ${_exe}
     )
     # Install with run permissions
-    install ( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${_name} DESTINATION ${INSTALL_BIN} COMPONENT Runtime)
+    install ( PROGRAMS ${_exe} DESTINATION ${INSTALL_BIN} COMPONENT Runtime)
+	  # Also install the source as optional component
+	  install ( PROGRAMS ${_source} DESTINATION ${INSTALL_FOO} 
+            RENAME ${_name}
+			      COMPONENT Other 
+    )
   else()
-    # Add .lua suffix and install as is
+    # Install into bin as is, we assume the executable uses UNIX shebang
+    # NOTE: This approach is unsuitable for non UNIX systems
     install ( PROGRAMS ${_source} DESTINATION ${INSTALL_BIN}
-            RENAME ${_source_name}.lua 
+            RENAME ${_name}
             COMPONENT Runtime
     )
   endif()
