@@ -1,0 +1,36 @@
+type = "x86"
+arch = "Windows"
+author = "Jas Latrix"
+depends = {
+[[lua ~> 5.1]],
+}
+
+desc = "LuaDate is a Lua module for date and time calculation and retrieval using the Gregorian Calendar system."
+version = "2.0.1"
+maintainer = "Peter Kapec"
+files = {
+Runtime = {
+[[lib\lua\date.lua]],
+[[bin\mkcalendar.exe]],
+[[bin\mkisocal.exe]],
+}
+,
+Documentation = {
+[[share\luadate\doc\date.doc.htm]],
+[[share\luadate\doc\date.doc.chm]],
+}
+,
+Data = {
+[[share\luadate\README]],
+}
+,
+Other = {
+[[share\luadate\etc\mkcalendar]],
+[[share\luadate\etc\mkisocal]],
+}
+,
+}
+
+url = "http://luaforge.net/projects/date/"
+name = "luadate"
+license = "Public Domain"
