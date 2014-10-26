@@ -700,6 +700,7 @@
  	end
 
 	function date:__call(...)
+		local arg = {...}
 		local n = #arg
 		if n  > 1 then return (date_from(unpack(arg)))
 		elseif n == 0 then return (date_getdobj(false))
